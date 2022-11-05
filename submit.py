@@ -28,18 +28,20 @@ def submit_code(code, pro, con=None):
     if con is not None:
         url += "?contestId=" + con
     datas = json.dumps({"enableO2": 1, "lang": 0, "code": code})
+    csrf = get_csrf_token(pro, con)
+    # print(csrf)
     headers = {
         "cookie": "__client_id=" + config.get_config("account", "client_id") + "; login_referer=https%3A%2F%2Fwww.luogu.com.cn%2F; _uid=" + config.get_config("account", "uid"),
         "origin": "https://www.luogu.com.cn",
         "referer": "https://www.luogu.com.cn/problem/" + pro,
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.52",
-        "X-CSRF-TOKEN": get_csrf_token(pro, con),
+        "X-CSRF-TOKEN": csrf,
         "Content-Type": "application/json"
     }
     response = requests.post(url, data=datas, headers=headers)
     # print(response.text)
     rid = json.loads(response.text)['rid']
-    print(Fore.GREEN + "OK submitted, rid =" + Fore.MAGENTA, rid, Fore.RESET)
+    print(Fore.GREEN + "OK submitted, rid = " + Fore.MAGENTA + str(rid) +  Fore.GREEN +  ", csrf-token = " + Fore.MAGENTA + csrf + Fore.RESET)
     get_record_details(str(rid))
 
 
