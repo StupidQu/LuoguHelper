@@ -5,7 +5,7 @@ import config
 import command
 
 is_dev_ver = True
-version = "0.0.1"
+version = "0.0.2"
 
 
 def print_copyright():
@@ -23,6 +23,7 @@ if __name__ == "__main__":
     os.system("cls")
     colorama.init()
     print_copyright()
+    run_path = os.getcwd()
     while True:
-        command.run_command(input(Fore.BLUE + ">> " + Fore.RESET))
+        command.run_command(input("(" + run_path + ") " +  Fore.BLUE + ">> " + Fore.RESET))
 

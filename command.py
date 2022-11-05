@@ -53,10 +53,10 @@ def submit_problem(cmd_raw):
             print(file_do_not_exist_error(cmd[1]))
             return
         if len(cmd) == 4:
-            submit_code(open(cmd[1], encoding="utf-8").read(), cmd[2], cmd[3])
+            rid = submit_code(open(cmd[1], encoding="utf-8").read(), cmd[2], cmd[3])
         else:
-            submit_code(open(cmd[1], encoding="utf-8").read(), cmd[2])
-
+            rid = submit_code(open(cmd[1], encoding="utf-8").read(), cmd[2])
+        view_score('_ ' + str(rid))
 
 def view_score(cmd_raw):
     cmd = cmd_raw.split(" ")

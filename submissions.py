@@ -50,6 +50,9 @@ def subtask_result(st):
     score = st['score']
     status = st['status']
     result = Style.BRIGHT
+    if status == 0:
+        return "Subtask #" + str(st['id'] + 1) + ": " + Fore.YELLOW + "Unknown Error" + Fore.RESET
+
     if status == 14:
         result += Fore.RED + "Unaccepted"
     else:
@@ -103,7 +106,7 @@ def multi_subtasks(st):
     return final_res
 
 
-def get_record_details(rid):
+def get_record_details(rid, pr=True):
     url = "https://www.luogu.com.cn/record/" + rid + "?_contentOnly=1"
     # print(url)
     headers = {
@@ -121,7 +124,8 @@ def get_record_details(rid):
         return
     score = json.loads(ret.text)["currentData"]["record"]["detail"]
     while score['compileResult'] is None:
-        print(Fore.CYAN + "Judging, please wait..." + Style.RESET_ALL)
+        if pr:
+            print(Fore.CYAN + "Judging, please wait..." + Style.RESET_ALL)
         ret = requests.get(url, headers=headers)
     # print(ret.text)
         if json.loads(ret.text)['code'] != 200:
@@ -130,14 +134,24 @@ def get_record_details(rid):
             return
         score = json.loads(ret.text)["currentData"]["record"]["detail"]
         sleep(3)
-    print(compile_result(score["compileResult"]) + Style.RESET_ALL + "\n")
+    if pr:
+        print(compile_result(score["compileResult"]) + Style.RESET_ALL + "\n")
     if score["compileResult"]['success'] == False:
         return
     # sleep(2)
     # print(score['judgeResult']['subtasks'][0]['testCases']['1'])
     # print(score['judgeResult'])
+    if score['judgeResult']['status'] == 11:
+        name = render_name(json.loads(ret.text)["currentData"]["record"]['user']['name'], json.loads(
+            ret.text)["currentData"]["record"]['user']['color'])
+    # print(name)
+        if pr:
+            print('Owner: ' + name + ', Problem: ' + json.loads(
+                ret.text)["currentData"]["record"]['problem']['pid'] + ", Result: " + Fore.YELLOW + "Unknown Error" + Fore.RESET + ", " + str(0) + 'pts')
+        return 0
     while len(score['judgeResult']['subtasks']) == 0:
-        print(Fore.CYAN + "Judging, please wait..." + Style.RESET_ALL)
+        if pr:
+            print(Fore.CYAN + "Judging, please wait..." + Style.RESET_ALL)
         ret = requests.get(url, headers=headers)
     # print(ret.text)
         if json.loads(ret.text)['code'] != 200:
@@ -148,14 +162,16 @@ def get_record_details(rid):
         sleep(2)
     # print(score['judgeResult']['subtasks'])
     if len(score['judgeResult']['subtasks']) != 1 and isinstance(score['judgeResult']['subtasks'], list) == False:
-        print(multi_subtasks(score))
+        if pr:
+            print(multi_subtasks(score))
     else:
         # print(len(score['judgeResult']['subtasks']))
         for i in range(len(score['judgeResult']['subtasks'])):
             if isinstance(score['judgeResult']['subtasks'][i], dict) == False:
                 continue
             # print(i)
-            print(subtask_result(score['judgeResult']['subtasks'][i]))
+            if pr:
+                print(subtask_result(score['judgeResult']['subtasks'][i]))
     result_all = ""
     if json.loads(ret.text)["currentData"]["record"]['status'] == 14:
         result_all = Fore.RED + Style.BRIGHT + "Unaccepted" + Style.RESET_ALL
@@ -164,8 +180,14 @@ def get_record_details(rid):
     name = render_name(json.loads(ret.text)["currentData"]["record"]['user']['name'], json.loads(
         ret.text)["currentData"]["record"]['user']['color'])
     # print(name)
-    print('Owner: ' + name + ', Problem: ' + json.loads(
-        ret.text)["currentData"]["record"]['problem']['pid'] + ", Result: " + result_all + ", " + str(json.loads(ret.text)["currentData"]["record"]['score']) + 'pts')
+    if pr:
+        f = 'score' in json.loads(ret.text)["currentData"]["record"].keys()
+        # print(f)
+        if f == False:
+            return 0
+        print('Owner: ' + name + ', Problem: ' + json.loads(ret.text)["currentData"]["record"]['problem']['pid'] +
+              ", Result: " + result_all + ", " + str(json.loads(ret.text)["currentData"]["record"]['score']) + 'pts')
     # print(testcase_result(score['judgeResult']
     #       ['subtasks'][0]['testCases']['0']))
     # print()
+    return json.loads(ret.text)["currentData"]["record"]['score']
