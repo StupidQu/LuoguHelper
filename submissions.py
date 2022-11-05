@@ -64,6 +64,8 @@ def subtask_result(st):
 def render_name(name, color):
     if color == "Gray":
         return Fore.RESET + name
+    elif color == 'Green':
+        return Fore.GREEN + name + Fore.RESET
     elif color == "Blue":
         return Fore.BLUE + name + Fore.RESET
     elif color == "Orange":
@@ -84,7 +86,7 @@ def multi_subtasks(st):
             result += Fore.GREEN + "Accepted"
         result = result + Style.RESET_ALL + ", " + str(score) + "pts\n"
         if isinstance(i['testCases'], list):
-            # result += 
+            # result +=
             final_res += "Subtask #" + str(i['id'] + 1) + ": " + result + "\tTestCases #" + \
                 str(i['testCases'][0]['id'] + 1) + ": " + \
                 testcase_result(i['testCases'][0]) + "\n\n"
@@ -159,8 +161,10 @@ def get_record_details(rid):
         result_all = Fore.RED + Style.BRIGHT + "Unaccepted" + Style.RESET_ALL
     else:
         result_all = Fore.GREEN + Style.BRIGHT + "Accepted" + Style.RESET_ALL
-    # print(json.loads(ret.text)["currentData"]["record"])
-    print('Owner: ' + render_name(json.loads(ret.text)["currentData"]["record"]['user']['name'], json.loads(ret.text)["currentData"]["record"]['user']['color']) + ', Problem: ' + json.loads(
+    name = render_name(json.loads(ret.text)["currentData"]["record"]['user']['name'], json.loads(
+        ret.text)["currentData"]["record"]['user']['color'])
+    # print(name)
+    print('Owner: ' + name + ', Problem: ' + json.loads(
         ret.text)["currentData"]["record"]['problem']['pid'] + ", Result: " + result_all + ", " + str(json.loads(ret.text)["currentData"]["record"]['score']) + 'pts')
     # print(testcase_result(score['judgeResult']
     #       ['subtasks'][0]['testCases']['0']))
