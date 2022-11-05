@@ -75,17 +75,24 @@ def render_name(name, color):
 def multi_subtasks(st):
     final_res = ""
     for _, i in st['judgeResult']['subtasks'].items():
-        # print(score['judgeResult']
-        # print(st['judgeResult']['subtasks'][str(i + 1)])
-        # print(i['testCases'])
+        result = Style.BRIGHT
         score = i['score']
         status = i['status']
-        result = Style.BRIGHT
         if status == 14:
             result += Fore.RED + "Unaccepted"
         else:
             result += Fore.GREEN + "Accepted"
         result = result + Style.RESET_ALL + ", " + str(score) + "pts\n"
+        if isinstance(i['testCases'], list):
+            # result += 
+            final_res += "Subtask #" + str(i['id'] + 1) + ": " + result + "\tTestCases #" + \
+                str(i['testCases'][0]['id'] + 1) + ": " + \
+                testcase_result(i['testCases'][0]) + "\n\n"
+            continue
+        # print(score['judgeResult']
+        # print(st['judgeResult']['subtasks'][str(i + 1)])
+        # print(i['testCases'])
+        # print(type(i['testCases']))
         for j in i['testCases'].values():
             # print(j)
             result += "\tTestCases #" + \
