@@ -39,7 +39,7 @@ def submit_code(code, pro, con=None):
         "Content-Type": "application/json"
     }
     response = requests.post(url, data=datas, headers=headers)
-    # print(response.text)
+    print(response.text)
     rid = json.loads(response.text)['rid']
     print(Fore.GREEN + "OK submitted, rid = " + Fore.MAGENTA + str(rid) +  Fore.GREEN +  ", csrf-token = " + Fore.MAGENTA + csrf + Fore.RESET)
     get_record_details(str(rid))

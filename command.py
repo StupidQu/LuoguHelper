@@ -17,6 +17,13 @@ def run_command(cmd_raw):
         set_account(cmd_raw)
     elif cmd[0] == "getcookie":
         get_cookie()
+    elif cmd[0] == 'script':
+        run_script(cmd[1])
+
+
+def run_script(file):
+    f = open(file, encoding="utf-8").read()
+    exec(f)
 
 
 def set_account(cmd_raw):
