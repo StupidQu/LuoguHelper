@@ -1,6 +1,7 @@
 import os
 from colorama import Fore, Style
 import colorama
+import config
 import command
 
 is_dev_ver = True
@@ -13,6 +14,8 @@ def print_copyright():
     if is_dev_ver:
         print(Fore.RED + "WARNING: " + Style.NORMAL +
               Fore.BLUE + "You are using the developing version.")
+    if config.is_section_exist('account') == False:
+        print(Fore.YELLOW + "E:" + Fore.RESET + " Please, set your account before submit, for more infomation, see our" + Fore.BLUE +  " github wiki.")
     print(Style.RESET_ALL)
 
 
